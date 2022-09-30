@@ -97,6 +97,19 @@ public class UsuarioController extends GenericError {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/save-rol")
+    public ResponseEntity<?> saveRole(@Validated @RequestBody AuthorityDto authorityDto, BindingResult result) {
+        try {
+            if (result.hasErrors()) {
+                return super.getError(result);
+            }
+            AuthorityDto usuarioDto = authorityService.save(authorityDto);
+            return ResponseEntity.ok().body(usuarioDto);
+        } catch (Exception e) {
+            System.err.println("e: " + e.getMessage());
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping("/search-reniec/{dni}")
     public ResponseEntity<?> getSearchRuc(@PathVariable(name = "dni") String dni) {
         try {

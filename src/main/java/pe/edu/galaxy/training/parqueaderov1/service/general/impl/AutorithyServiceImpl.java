@@ -44,7 +44,11 @@ public class AutorithyServiceImpl implements AuthorityService {
 
     @Override
     public AuthorityDto save(AuthorityDto authorityDto) throws ServiceException {
-        return null;
+        try {
+            return authorityMapper.toAuthorityDto(authorityRepository.save(authorityMapper.toAuthorityEntity(authorityDto)));
+        } catch (RuntimeException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
