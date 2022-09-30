@@ -50,7 +50,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
        .authorizeRequests()
        .antMatchers(HttpMethod.POST, Constants.LOGIN_URL).permitAll()
        //.antMatchers(HttpMethod.GET, "/v1/usuario/**").permitAll()
-            // .antMatchers(HttpMethod.POST, "/v1/usuario/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/v1/usuario/**").permitAll()
        .anyRequest()
        .authenticated()
        .and()
