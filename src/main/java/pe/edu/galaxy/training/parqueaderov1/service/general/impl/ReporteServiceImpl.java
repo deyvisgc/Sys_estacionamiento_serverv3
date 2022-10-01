@@ -42,6 +42,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
            Page<VehiculoEntity> vehiculoEntities = vehiculoRepository.findByFechaRegistro(pageable, date);
             return vehiculoEntities;
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
     }
@@ -56,6 +57,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
             Page<TarifaEntity> tarifaEntities = tarifaRepository.findByFechaRegistro(pageable, date);
             return tarifaEntities;
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
     }
@@ -79,6 +81,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
             });
             return totalMeses;
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e);
             throw new ServiceException(e);
         }
 
@@ -107,6 +110,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
             });
             return totalMeses;
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
 
@@ -117,6 +121,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
         try {
             return vehiculoRepository.totalClientes();
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
 
@@ -127,6 +132,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
         try {
             return usuarioRepository.totalUsers();
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
     }
@@ -136,6 +142,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
         try {
             return tarifaRepository.totalGanancia();
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
 
@@ -145,11 +152,20 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
     public Integer nuevosIngresos() throws ServiceException {
         try {
             String date =  Constantes.formatDate(LocalDate.now());
+            System.out.println("date"+ date);
+            return vehiculoRepository.findByFechaRegistroAndEstado(new Date());
+           /* List<VehiculoEntity> vehiculoEntities = vehiculoRepository.findAll();
+            if(Objects.isNull(vehiculoEntities)) {
+                return null;
+            }
+            String date =  Constantes.formatDate(LocalDate.now());
             return vehiculoRepository.findByFechaRegistroAndEstado(date);
+
+            */
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
-
     }
 
     @Override
@@ -157,6 +173,7 @@ public class ReporteServiceImpl extends QueryService<VehiculoEntity> implements 
         try {
             return tarifaRepository.totalComprobantes();
         } catch (RuntimeException e) {
+            System.err.println("Error: " + e.getMessage());
             throw new ServiceException(e);
         }
     }

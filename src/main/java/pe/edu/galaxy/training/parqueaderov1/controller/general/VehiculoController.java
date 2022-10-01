@@ -80,11 +80,7 @@ public class VehiculoController extends GenericError {
                 resMessage.setMessage("Ya existe un vehiculo con la cedula: " + vehiculoDto.getCedula() + " en este parqueo.");
                 return new  ResponseEntity(resMessage, HttpStatus.FORBIDDEN);
             }
-            Integer status = vehiculoService.ingreso(vehiculoDto);
-            if (status == 0) {
-                resMessage.setMessage("El codigo de operación no existe");
-                return new  ResponseEntity(resMessage, HttpStatus.BAD_GATEWAY);
-            }
+            vehiculoService.ingreso(vehiculoDto);
             resMessage.setMessage("Ingreso exitoso");
             resMessage.setSuccess(true);
             return ResponseEntity.status(HttpStatus.CREATED).body(resMessage);

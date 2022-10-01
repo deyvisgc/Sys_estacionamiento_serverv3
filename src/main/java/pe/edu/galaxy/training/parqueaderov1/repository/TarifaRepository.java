@@ -12,10 +12,10 @@ import pe.edu.galaxy.training.parqueaderov1.entity.VehiculoEntity;
 public interface TarifaRepository extends JpaRepository<TarifaEntity, Long>, JpaSpecificationExecutor<TarifaEntity> {
     @Query(value = "select\n" +
             "    CASE\n" +
-            "        when SUBSTRING(codigo_tarifa, 6) < 9 AND SUBSTRING(codigo_tarifa, 6) <> 0  then concat('CT000',(SUBSTRING(codigo_tarifa, 6) + 1))\n" +
-            "        when SUBSTRING(codigo_tarifa, 5) < 99 AND SUBSTRING(codigo_tarifa, 5) <> 0 then concat('CT00',(SUBSTRING(codigo_tarifa, 5) + 1))\n" +
-            "        when SUBSTRING(codigo_tarifa, 4) < 999 AND SUBSTRING(codigo_tarifa, 4) <> 0 then concat('CT0',(SUBSTRING(codigo_tarifa, 4) + 1))\n" +
-            "        when SUBSTRING(codigo_tarifa, 3) < 9999 AND SUBSTRING(codigo_tarifa, 3) <> 0 then concat('CT',(SUBSTRING(codigo_tarifa, 3) + 1))\n" +
+            "        when cast(substring(codigo_tarifa, 6) as int) < 9 AND cast(substring(codigo_tarifa, 6) as int)  <> 0  then concat('CT000',(cast(SUBSTRING(codigo_tarifa, 6) as int) + 1))\n" +
+            "        when cast(substring(codigo_tarifa, 5) as int) < 99 AND cast(substring(codigo_tarifa, 5) as int)  <> 0 then concat('CT00',(cast(SUBSTRING(codigo_tarifa, 5) as int) + 1))\n" +
+            "        when cast(substring(codigo_tarifa, 4) as int) < 999 AND cast(substring(codigo_tarifa, 4) as int) <> 0 then concat('CT0',(cast(SUBSTRING(codigo_tarifa, 4) as int) + 1))\n" +
+            "        when cast(substring(codigo_tarifa, 3) as int) < 9999 AND cast(substring(codigo_tarifa, 3) as int) <> 0 then concat('CT',(cast(SUBSTRING(codigo_tarifa, 3) as int) + 1))\n" +
             "        ELSE 'terminado'\n" +
             "    END from tb_tarifa order by id_tarifa desc limit 1;", nativeQuery = true)
     String obtenerCodigoTarifa();
@@ -25,7 +25,7 @@ public interface TarifaRepository extends JpaRepository<TarifaEntity, Long>, Jpa
     @Query(value = "SELECT COUNT(id) as total FROM TarifaEntity")
     Integer totalComprobantes();
 
-    @Query(value = "SELECT * FROM tb_tarifa where DATE_FORMAT(fecha_registro, '%Y-%m') = :fecha", nativeQuery = true)
+    @Query(value = "SELECT * FROM tb_tarifa where to_char(fecha_registro, 'YYYY-MM') = :fecha", nativeQuery = true)
     Page<TarifaEntity> findByFechaRegistro(Pageable pageable, @Param("fecha") String date);
 
 }

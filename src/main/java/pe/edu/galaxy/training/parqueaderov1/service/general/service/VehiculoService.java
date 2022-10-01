@@ -15,7 +15,7 @@ public interface VehiculoService extends GenericService<VehiculoDto> {
     Optional<VehiculoDto> findByCodigoOperacion(String codigo) throws ServiceException;
 
     boolean existsByCedula(String cedula) throws ServiceException;
-    Integer ingreso(VehiculoDto vehiculoDto) throws ServiceException;
+    void ingreso(VehiculoDto vehiculoDto) throws ServiceException;
     TarifaDto salida(VehiculoDto vehiculoDto) throws ServiceException;
     VehiculoDto update(VehiculoDto vehiculoDto) throws ServiceException;
     void export(HttpServletResponse response, long idVehiculo) throws IOException;

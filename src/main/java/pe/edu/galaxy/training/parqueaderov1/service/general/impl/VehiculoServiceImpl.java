@@ -105,13 +105,13 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
-    public Integer ingreso(VehiculoDto vehiculoDto) throws ServiceException {
+    public void ingreso(VehiculoDto vehiculoDto) throws ServiceException {
         try {
-           return  vehiculoRepository.ingresoVehiculo(
+                vehiculoRepository.ingresoVehiculo(
                     vehiculoDto.getLicense_plate(),
                     vehiculoDto.getCedula(),
-                    vehiculoDto.getType_vehicle().getId(),
-                    String.valueOf(vehiculoDto.getCheck_in_time()),
+                   (int) vehiculoDto.getType_vehicle().getId(),
+                        vehiculoDto.getCheck_in_time(),
                     vehiculoDto.getPerson().getName(),
                     vehiculoDto.getPerson().getPhone(),
                     vehiculoDto.getPerson().getNumber(),

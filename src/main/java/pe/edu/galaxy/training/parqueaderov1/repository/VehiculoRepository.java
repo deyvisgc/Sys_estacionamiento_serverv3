@@ -13,6 +13,9 @@ import pe.edu.galaxy.training.parqueaderov1.dto.VehiculoDto;
 import pe.edu.galaxy.training.parqueaderov1.entity.VehiculoEntity;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
@@ -34,26 +37,35 @@ public interface VehiculoRepository extends JpaRepository<VehiculoEntity, Long>,
     // @Query(nativeQuery = true, value = "select * from tb_vehicle where cedula=:cedula and id_person=:id")
     boolean existsByCedula(String cedula);
     Optional<VehiculoEntity> findByPlaca(String placa);
-    @Query(value = "call ingresarVehiculo(" +
+    @Query(value = " select ingreso(" +
             ":placaVehiculo, :cedulaVehiculo, :tipoVehiculo, :horaEntrada, :nombreCliente," +
             ":telefono, :numeroDocumento, :direccion)", nativeQuery = true)
-    Integer ingresoVehiculo(
+    void ingresoVehiculo(
             @Param("placaVehiculo") String placaVehiculo,
             @Param("cedulaVehiculo") String cedulaVehiculo,
-            @Param("tipoVehiculo") Long tipoVehiculo,
-            @Param("horaEntrada") String horaEntrada,
+            @Param("tipoVehiculo") Integer tipoVehiculo,
+            @Param("horaEntrada") LocalTime horaEntrada,
             @Param("nombreCliente") String nombreCliente,
             @Param("telefono") String telefono,
             @Param("numeroDocumento") String numeroDocumento,
             @Param("direccion") String direccion
     );
+    /*
+    @Query(value = " select prueba1(:descripcion, :precio, :status)", nativeQuery = true)
+    void ingresoVehiculo1(
+            @Param("descripcion") String descripcion,
+            @Param("precio") BigDecimal precio,
+            @Param("status") String status
+    );
+
+     */
     @Query(value = "SELECT COUNT(id) as total FROM VehiculoEntity")
     Integer totalClientes();
-    @Query(value = "select COUNT(*) from tb_vehicle where DATE(date_register) = :date and status = '1'", nativeQuery = true)
-    Integer findByFechaRegistroAndEstado(@Param("date") String hoy);
+    @Query(value = "select COUNT(*) from tb_vehicle where DATE(date_register) = :fechaIngreso and status = '1'", nativeQuery = true)
+    Integer findByFechaRegistroAndEstado(@Param("fechaIngreso") Date hoy);
 
-    @Query(value = "SELECT * FROM tb_vehicle where DATE_FORMAT(date_register, '%Y-%m') = :fecha", nativeQuery = true)
-    Page<VehiculoEntity> findByFechaRegistro(Pageable pageable,  @Param("fecha") String hoy);
+    @Query(value = "SELECT * FROM tb_vehicle where to_char(date_register, 'YYYY-MM') = :fecha", nativeQuery = true)
+    Page<VehiculoEntity> findByFechaRegistro(Pageable pageable,  @Param("fecha") String mes);
     @Query(value = "SELECT v FROM VehiculoEntity v where year (v.fechaRegistro) = :fecha")
     Page<VehiculoEntity> findByFechaRegistro1(Pageable pageable,  @Param("fecha") String hoy);
 }

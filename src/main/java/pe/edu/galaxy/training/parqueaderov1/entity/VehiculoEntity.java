@@ -28,7 +28,7 @@ public class VehiculoEntity {
     private String placa;
 
     private String cedula;
-    @Column(name = "date_register")
+    @Column(name = "date_register", updatable = false)
     private Date fechaRegistro;
     @Column(name = "departure_date")
     private Date fechaSalida;
