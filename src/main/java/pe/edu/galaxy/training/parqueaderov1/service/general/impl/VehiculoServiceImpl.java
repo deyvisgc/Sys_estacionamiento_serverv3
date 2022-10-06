@@ -11,6 +11,7 @@ import pe.edu.galaxy.training.parqueaderov1.dto.VehiculoDto;
 import pe.edu.galaxy.training.parqueaderov1.entity.*;
 import pe.edu.galaxy.training.parqueaderov1.mapper.PersonaMapper;
 import pe.edu.galaxy.training.parqueaderov1.mapper.TarifaMapper;
+import pe.edu.galaxy.training.parqueaderov1.mapper.TipoVehiculoMapper;
 import pe.edu.galaxy.training.parqueaderov1.mapper.VehiculoMapper;
 import pe.edu.galaxy.training.parqueaderov1.repository.PersonaRepository;
 import pe.edu.galaxy.training.parqueaderov1.repository.TarifaRepository;
@@ -49,6 +50,8 @@ public class VehiculoServiceImpl implements VehiculoService {
     private TarifaMapper tarifaMapper;
     @Autowired
     TipoVehiculoRepository tipoVehiculoRepository;
+    @Autowired
+    TipoVehiculoMapper tipoVehiculoMapper;
     @Autowired
     private PersonaRepository personaRepository;
     @Autowired
@@ -410,11 +413,16 @@ public class VehiculoServiceImpl implements VehiculoService {
 
                 VehiculoEntity refVehiculo = vehiculoMapper.toVehiculoEntity(vehiculoDto);
                 BeanUtils.copyProperties(vehiculoDto , refVehiculo);
+
                 Optional<TipoVehiculoEntity> tipoVehiculo = tipoVehiculoRepository.findById(vehiculoDto.getType_vehicle().getId());
-                refVehiculo.setPersonaVehiculo(persona);
-                refVehiculo.setTipoVehiculo(tipoVehiculo.get());
+
+                TipoVehiculoEntity refTipoVehiculo = tipoVehiculo.get();
+
+                BeanUtils.copyProperties(vehiculoDto.getType_vehicle(), tipoVehiculo.get());
                 refVehiculo.setEstado('1');
                 refVehiculo.setStatusDelete('1');
+                refVehiculo.setPersonaVehiculo(persona);
+                refVehiculo.setTipoVehiculo(refTipoVehiculo);
                 VehiculoEntity vehiculoDto1 = vehiculoRepository.save(refVehiculo);
                 return vehiculoMapper.toVehiculoDto(vehiculoDto1);
             } else {

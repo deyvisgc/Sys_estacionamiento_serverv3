@@ -53,7 +53,7 @@ public class VehiculoEntity {
     @JoinColumn(name = "id_person")
     private PersonaEntity personaVehiculo;
     @ManyToOne
-    @JoinColumn(name = "id_type_vehicle", insertable = false, updatable = false)
+    @JoinColumn(name = "id_type_vehicle")
     private TipoVehiculoEntity tipoVehiculo;
    @PrePersist
     private void persistFechaRegistro() {
