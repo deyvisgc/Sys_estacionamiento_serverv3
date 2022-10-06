@@ -17,8 +17,10 @@ import pe.edu.galaxy.training.parqueaderov1.dto.AuthorityDto;
 import pe.edu.galaxy.training.parqueaderov1.dto.PersonaDto;
 import pe.edu.galaxy.training.parqueaderov1.dto.UsuarioDto;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.AuthorityEntity;
+import pe.edu.galaxy.training.parqueaderov1.entity.security.ConfiguracionEntity;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.UsuarioEntity;
 import pe.edu.galaxy.training.parqueaderov1.service.general.service.AuthorityService;
+import pe.edu.galaxy.training.parqueaderov1.service.general.service.ConfiguracionService;
 import pe.edu.galaxy.training.parqueaderov1.service.general.service.PersonaService;
 import pe.edu.galaxy.training.parqueaderov1.service.general.service.UsuarioService;
 import pe.edu.galaxy.training.parqueaderov1.utils.Api;
@@ -38,7 +40,8 @@ public class UsuarioController extends GenericError {
     private PersonaService personaService;
     @Autowired
     private AuthorityService authorityService;
-
+    @Autowired
+    ConfiguracionService configuracionService;
     @GetMapping("/")
     public ResponseEntity<Page<UsuarioDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -113,8 +116,13 @@ public class UsuarioController extends GenericError {
     @GetMapping("/search-reniec/{dni}")
     public ResponseEntity<?> getSearchRuc(@PathVariable(name = "dni") String dni) {
         try {
-            HttpHeaders headers = Api.obtenerHeaders();
-            ResponseEntity<String> response = Api.fetchApi(Constantes.URLAPIPERU + dni, HttpMethod.GET, headers);
+            Optional<ConfiguracionEntity> configApi = configuracionService.findByTypeApi("documento");
+            if (configApi.isEmpty()) {
+                 return ResponseEntity.badRequest().body("No existe token");
+            }
+            HttpHeaders headers = Api.obtenerHeaders(configApi.get().getToken());
+            String uri = configApi.get().getUrlApi().concat("/dni/") + dni;
+            ResponseEntity<String> response = Api.fetchApi(uri, HttpMethod.GET, headers);
             if (isNull(response.getBody())) {
                 return ResponseEntity.noContent().build();
             }

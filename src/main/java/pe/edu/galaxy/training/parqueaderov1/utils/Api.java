@@ -8,9 +8,9 @@ import org.springframework.web.client.RestTemplate;
 
 public class Api {
 
-    public static HttpHeaders obtenerHeaders() {
+    public static HttpHeaders obtenerHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", Constantes.TYPETOKEN + " " + Constantes.TOKEN);
+        headers.set("Authorization", Constantes.TYPETOKEN + " " + token);
         headers.set("Content-Type", "application/json");
         return headers;
     }

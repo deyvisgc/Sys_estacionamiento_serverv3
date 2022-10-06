@@ -1,14 +1,16 @@
 package pe.edu.galaxy.training.parqueaderov1.entity.security;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
-
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_authority")
 @ToString
-@Data
+
 public class AuthorityEntity{
 
 	@Id

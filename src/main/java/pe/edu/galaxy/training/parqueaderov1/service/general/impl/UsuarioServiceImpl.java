@@ -38,8 +38,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private PersonaMapper personaMapper;
     @Autowired
-    private AuthorityMapper authorityMapper;
-    @Autowired
     private AuthorityRepository authorityRepository;
     @Override
     public List<UsuarioDto> findAll() throws ServiceException {

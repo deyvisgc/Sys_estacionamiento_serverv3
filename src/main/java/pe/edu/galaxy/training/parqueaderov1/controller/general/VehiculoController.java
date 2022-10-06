@@ -105,6 +105,7 @@ public class VehiculoController extends GenericError {
                 return new  ResponseEntity(resMessage, HttpStatus.BAD_GATEWAY);
             }
             VehiculoDto vehiculo = vehiculoService.update(vehiculoDto);
+            System.out.println("editVehiculo: " + editVehiculo);
             if (isNull(vehiculo)) {
                 resMessage.setMessage("El vehiculo con la placa: " + vehiculoDto.getLicense_plate() + " ya se encuentra registrado en nuestro establecimiento");
                 return new  ResponseEntity(resMessage, HttpStatus.BAD_GATEWAY);

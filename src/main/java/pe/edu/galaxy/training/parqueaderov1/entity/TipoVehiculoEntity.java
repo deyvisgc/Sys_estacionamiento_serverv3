@@ -19,7 +19,8 @@ public class TipoVehiculoEntity {
     private long id;
     private String description;
     private double price_hour;
-    private char status;
+    @Builder.Default
+    private char status = '1';
     @JsonIgnore
     @OneToMany(mappedBy = "tipoVehiculo", cascade = CascadeType.ALL)
     @ToString.Exclude

@@ -231,16 +231,16 @@ public class VehiculoServiceImpl implements VehiculoService {
             placa.setSpacingAfter(1);
             ZoneId zoneId = ZoneId.of("America/Lima");
 
-            String fechaEntrada = Constantes.formatDateTime(vehiculo.get().getFechaRegistro().toInstant().atZone(zoneId).toLocalDateTime()); // convertir a formato fecha
-            String fechaSalida = Constantes.formatDateTime(tarifa.getVehiculoEntity().getFechaSalida().toInstant().atZone(zoneId).toLocalDateTime());
+            //String fechaEntrada = Constantes.formatDateTime(vehiculo.get().getFechaRegistro().toInstant().atZone(zoneId).toLocalDateTime()); // convertir a formato fecha
+            // String fechaSalida = Constantes.formatDateTime(tarifa.getVehiculoEntity().getFechaSalida().toInstant().atZone(zoneId).toLocalDateTime());
 
             Paragraph entrada = new Paragraph("Entrada: ", fontForKeys);
-            entrada.add(new Chunk(fechaEntrada, FontFactory.getFont(FontFactory.COURIER, 10)));
+            entrada.add(new Chunk(vehiculo.get().getHoraEntrada().toString(), FontFactory.getFont(FontFactory.COURIER, 10)));
             entrada.setAlignment(Paragraph.ALIGN_LEFT);
             entrada.setSpacingAfter(1);
 
             Paragraph salida = new Paragraph("Salida: ", fontForKeys);
-            salida.add(new Chunk(fechaSalida, FontFactory.getFont(FontFactory.COURIER, 10)));
+            salida.add(new Chunk(vehiculo.get().getHoraSalida().toString(), FontFactory.getFont(FontFactory.COURIER, 10)));
             salida.setAlignment(Paragraph.ALIGN_LEFT);
             salida.setSpacingAfter(1);
 
@@ -391,6 +391,7 @@ public class VehiculoServiceImpl implements VehiculoService {
     @Override
     public VehiculoDto update(VehiculoDto vehiculoDto) throws ServiceException {
         try {
+            System.out.println("vehiculo::: " + vehiculoDto.getLicense_plate());
             Optional<VehiculoEntity> vehiculo = vehiculoRepository.findByPlaca(vehiculoDto.getLicense_plate());
             boolean edit = false;
             if (vehiculo.isEmpty()) {
@@ -399,11 +400,13 @@ public class VehiculoServiceImpl implements VehiculoService {
                 edit = true;
             }
             if (edit) {
-                vehiculoDto.getPerson().setId(vehiculo.get().getPersonaVehiculo().getId());
+
+                VehiculoEntity vehiculoEntity = vehiculoRepository.findById(vehiculoDto.getId()).get();
+
+                vehiculoDto.getPerson().setId(vehiculoEntity.getPersonaVehiculo().getId());
                 PersonaEntity refPersona = personaMapper.toPersonaEntity(vehiculoDto.getPerson());
                 BeanUtils.copyProperties(vehiculoDto.getPerson(), refPersona);
                 PersonaEntity persona = personaRepository.save(refPersona);
-                System.out.println("persona" + persona.toString());
 
                 VehiculoEntity refVehiculo = vehiculoMapper.toVehiculoEntity(vehiculoDto);
                 BeanUtils.copyProperties(vehiculoDto , refVehiculo);
