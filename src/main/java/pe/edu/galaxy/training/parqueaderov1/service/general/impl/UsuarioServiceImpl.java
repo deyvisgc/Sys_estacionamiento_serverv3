@@ -83,7 +83,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         try {
             Optional<UsuarioEntity> usuarioEntity = Optional.of(usuarioRepository.findById(usuarioDto.getId()).get());
            if (usuarioEntity.isPresent() && !usuarioEntity.isEmpty()) {
-
                usuarioDto.getPerson().setId(usuarioEntity.get().getPersona().getId()); // seteo el id de la persona
 
                PersonaEntity refPersona = personaMapper.toPersonaEntity(usuarioDto.getPerson());
@@ -123,17 +122,72 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioEntity existsByUsuario(String usario) {
-        return this.usuarioRepository.findByUsuarioAndEstado(usario, '1');
+    public UsuarioEntity existsByUsuario(String usario) throws ServiceException {
+
+        try {
+            return this.usuarioRepository.findByUsuarioAndEstado(usario, '1');
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
-    public List<AuthorityEntity> findByAuthorities(Long id) {
-        return usuarioRepository.findByAuthorities(id);
+    public List<AuthorityEntity> findByAuthorities(Long id) throws ServiceException  {
+
+        try {
+            return usuarioRepository.findByAuthorities(id);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
-    public Page<UsuarioDto> page(Pageable pageable) {
-        return usuarioRepository.findAllByEstado(pageable, '1').map(us -> usuarioMapper.toUsuarioDto(us));
+    public Page<UsuarioDto> page(Pageable pageable) throws ServiceException {
+        try {
+            return usuarioRepository.findAllByEstado(pageable, '1').map(us -> usuarioMapper.toUsuarioDto(us));
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+
+    }
+
+    @Override
+    public UsuarioDto findByEmail(String correo) throws ServiceException {
+        try {
+            UsuarioDto usuarioDto = usuarioMapper.toUsuarioDto(usuarioRepository.findByPersona_Email(correo));
+            if(isNull(usuarioDto)) {
+                return null;
+            }
+            return usuarioDto;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public UsuarioDto findByTokenPassword(String token) throws ServiceException {
+        try {
+            return usuarioMapper.toUsuarioDto(usuarioRepository.findByTokenPassword(token));
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void updateTokenPassword(String tokenPassword, long id) throws ServiceException {
+        try {
+            usuarioRepository.updateTokenPassword(tokenPassword, id);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void changePassword(String password, long id) throws ServiceException {
+        try {
+            usuarioRepository.changePassword(password, id);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
     }
 }

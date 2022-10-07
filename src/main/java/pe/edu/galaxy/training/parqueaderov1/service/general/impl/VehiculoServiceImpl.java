@@ -193,7 +193,7 @@ public class VehiculoServiceImpl implements VehiculoService {
             if (tipoVehiculo.isEmpty()) {
                 throw new IOException("tipo vehiculo no existe");
             }
-            String fileName = "D:\\Proyectos Deyvis\\Curgo Galaxy\\proyecto galaxy\\Sys_estacionamiento_server\\src\\main\\java\\pe\\edu\\galaxy\\training\\parqueaderov1\\img\\image.jpg";
+            String fileName = "D:\\Proyectos Deyvis\\Curgo Galaxy\\proyecto galaxy\\Sys_estacionamiento_server\\src\\main\\java\\pe\\edu\\galaxy\\training\\parqueaderov1\\img\\logo.jpg";
             //InputStream input = new FileInputStream(fileName);
             //byte[] bytes = IOUtils.readFully(input);
             // InputStreamResource inputStreamReader = new InputStreamResource(new FileInputStream(path));

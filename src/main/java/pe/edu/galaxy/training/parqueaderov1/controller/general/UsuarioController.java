@@ -16,6 +16,7 @@ import pe.edu.galaxy.training.parqueaderov1.controller.error.GenericError;
 import pe.edu.galaxy.training.parqueaderov1.dto.AuthorityDto;
 import pe.edu.galaxy.training.parqueaderov1.dto.PersonaDto;
 import pe.edu.galaxy.training.parqueaderov1.dto.UsuarioDto;
+import pe.edu.galaxy.training.parqueaderov1.entity.PersonaEntity;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.AuthorityEntity;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.ConfiguracionEntity;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.UsuarioEntity;
@@ -155,11 +156,16 @@ public class UsuarioController extends GenericError {
                 return super.getError(result);
             }
             UsuarioEntity existUsers = usuarioService.existsByUsuario(usuarioDto.getUser_name());
-
+            Optional<PersonaDto> existCorreo = personaService.findByEmailAndTypePersona(usuarioDto.getPerson().getGmail());
             if (!isNull(existUsers)) {
-                resMessage.setMessage("El email: " + usuarioDto.getUser_name() + " ya existe, digitar un email diferente");
+                resMessage.setMessage("El usuario: " + usuarioDto.getUser_name() + " ya existe, digitar un usuario diferente");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resMessage);
             }
+            if (!isNull(existCorreo)) {
+                resMessage.setMessage("El correo: " + usuarioDto.getPerson().getGmail() + " ya existe, digitar un correo diferente");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resMessage);
+            }
+            System.out.println("por que no entra");
             Optional<PersonaDto> personaDto = personaService.findByNumeroDocumento(usuarioDto.getPerson().getNumber());
 
             if (isNull(personaDto)) {
@@ -193,6 +199,7 @@ public class UsuarioController extends GenericError {
                 return super.getError(result);
             }
             ResMessage resMessage = validate(usuarioDto, id);
+            System.out.println("existCorreo: " + resMessage);
             if (resMessage.getSuccess()) {
                 usuarioDto.setId(id);
                 UsuarioDto usuario = usuarioService.update(usuarioDto);
@@ -219,12 +226,21 @@ public class UsuarioController extends GenericError {
         }
 
         UsuarioEntity emailRepet = usuarioService.existsByUsuario(usuarioDto.getUser_name());
+        Optional<PersonaDto> existCorreo = personaService.findByEmailAndTypePersona(usuarioDto.getPerson().getGmail());
         if (isNull(emailRepet)) {
+            resMessage.setSuccess(true);
+        }
+        if (isNull(existCorreo)) { // si no existe si se puede cambiar
             resMessage.setSuccess(true);
         }
 
         if (!isNull(emailRepet) && emailRepet.getId() != existUsuario.get().getId()) {
-            resMessage.setMessage("El email: " + usuarioDto.getUser_name() + " ya existe, digitar un email diferente");
+            resMessage.setMessage("El usuario: " + usuarioDto.getUser_name() + " ya existe, digitar un usuario diferente");
+            return resMessage;
+        }
+
+        if (!isNull(existCorreo) && existCorreo.get().getId() != existUsuario.get().getPerson().getId()) {
+            resMessage.setMessage("El correo: " + usuarioDto.getPerson().getGmail() + " ya existe, digitar un correo diferente");
             return resMessage;
         }
 

@@ -40,6 +40,20 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
+    public Optional<PersonaDto> findByEmailAndTypePersona(String correo) throws ServiceException  {
+
+        try{
+            Optional<PersonaEntity> personaEntity = personaRepository.findByEmailAndTypePersona(correo, "0"); // 0 es usuario
+            if(personaEntity.isPresent()) {
+                return Optional.of(personaMapper.toPersonaDto(personaEntity.get()));
+            }
+            return null;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public List<PersonaDto> findByObject(PersonaDto personaDto) throws ServiceException {
         return null;
     }

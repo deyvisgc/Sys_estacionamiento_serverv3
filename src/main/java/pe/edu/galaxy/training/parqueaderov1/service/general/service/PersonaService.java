@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface PersonaService extends GenericService<PersonaDto> {
     Optional<PersonaDto> findByNumeroDocumento(String numero) throws ServiceException;
-
+    Optional<PersonaDto> findByEmailAndTypePersona(String correo)  throws ServiceException;
 }

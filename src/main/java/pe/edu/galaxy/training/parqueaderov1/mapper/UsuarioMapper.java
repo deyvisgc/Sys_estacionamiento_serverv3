@@ -21,5 +21,6 @@ public interface UsuarioMapper {
     List<UsuarioDto> toListUsuarioDto(List<UsuarioEntity> usuarioEntities);
     @InheritInverseConfiguration
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tokenPassword", ignore = true)
     UsuarioEntity toUsuarioEntity(UsuarioDto usuarioDto);
 }

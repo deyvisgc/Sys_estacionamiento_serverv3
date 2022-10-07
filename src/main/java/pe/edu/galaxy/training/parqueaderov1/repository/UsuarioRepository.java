@@ -12,6 +12,8 @@ import pe.edu.galaxy.training.parqueaderov1.entity.security.AuthorityEntity;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.UsuarioEntity;
 
 import javax.transaction.Transactional;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -26,4 +28,15 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     List<AuthorityEntity> findByAuthorities(Long id);
     @Query(value = "SELECT COUNT(id) as total FROM UsuarioEntity ")
     Integer totalUsers();
+    UsuarioEntity findByPersona_Email(String correo);
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE UsuarioEntity SET tokenPassword =:token where id =:id")
+    void updateTokenPassword(@Param("token") String tokenPassword, @Param("id") long id);
+    UsuarioEntity findByTokenPassword(String token);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE UsuarioEntity SET tokenPassword = null, clave =:password where id =:id")
+    void changePassword(@Param("password") String password, @Param("id") long id);
 }

@@ -22,6 +22,7 @@ public class UsuarioDto {
     //@NotBlank(message = "Password es requerido")
     private String password;
     private String status;
+    private String tokenPassword;
     @Valid
     private PersonaDto person;
     @NotNull(message = "Roles requeridos")

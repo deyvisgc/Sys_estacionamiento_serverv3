@@ -32,10 +32,11 @@ public class UsuarioEntity {
     @Column(name = "status_users", length = 1)
     @Builder.Default
     private char estado = '1';
+    @Column(name = "token_password")
+    private String tokenPassword;
     @ManyToOne
     @JoinColumn(name = "id_person",  nullable = false)
     private PersonaEntity persona;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "TBL_USUARIO_AUTHORITY", joinColumns = { @JoinColumn(name = "id_users") }, inverseJoinColumns = {
             @JoinColumn(name = "id_authority") })
