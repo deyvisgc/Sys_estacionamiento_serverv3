@@ -16,17 +16,15 @@ import pe.edu.galaxy.training.parqueaderov1.controller.error.GenericError;
 import pe.edu.galaxy.training.parqueaderov1.dto.AuthorityDto;
 import pe.edu.galaxy.training.parqueaderov1.dto.PersonaDto;
 import pe.edu.galaxy.training.parqueaderov1.dto.UsuarioDto;
-import pe.edu.galaxy.training.parqueaderov1.entity.PersonaEntity;
-import pe.edu.galaxy.training.parqueaderov1.entity.security.AuthorityEntity;
+import pe.edu.galaxy.training.parqueaderov1.email.dto.ChangePasswordUsersDto;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.ConfiguracionEntity;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.UsuarioEntity;
 import pe.edu.galaxy.training.parqueaderov1.service.general.service.AuthorityService;
 import pe.edu.galaxy.training.parqueaderov1.service.general.service.ConfiguracionService;
 import pe.edu.galaxy.training.parqueaderov1.service.general.service.PersonaService;
 import pe.edu.galaxy.training.parqueaderov1.service.general.service.UsuarioService;
+import pe.edu.galaxy.training.parqueaderov1.service.general.service.ps.ServicePS;
 import pe.edu.galaxy.training.parqueaderov1.utils.Api;
-import pe.edu.galaxy.training.parqueaderov1.utils.Constantes;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.*;
 
 import static java.util.Objects.isNull;
@@ -43,6 +41,9 @@ public class UsuarioController extends GenericError {
     private AuthorityService authorityService;
     @Autowired
     ConfiguracionService configuracionService;
+
+    @Autowired
+    ServicePS servicePS;
     @GetMapping("/")
     public ResponseEntity<Page<UsuarioDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -199,12 +200,15 @@ public class UsuarioController extends GenericError {
                 return super.getError(result);
             }
             ResMessage resMessage = validate(usuarioDto, id);
-            System.out.println("existCorreo: " + resMessage);
             if (resMessage.getSuccess()) {
                 usuarioDto.setId(id);
-                UsuarioDto usuario = usuarioService.update(usuarioDto);
-                if (isNull(usuario)) {
-                    return ResponseEntity.noContent().build();
+                if(usuarioDto.getRole() == null) {
+                    servicePS.updateusersusp(usuarioDto);
+                } else {
+                    UsuarioDto usuario = usuarioService.update(usuarioDto);
+                    if (isNull(usuario)) {
+                        return ResponseEntity.noContent().build();
+                    }
                 }
                 resMessage.setMessage("Usuario actualizado");
                 resMessage.setSuccess(true);
@@ -279,6 +283,45 @@ public class UsuarioController extends GenericError {
             resMessage.setSuccess(true);
             return ResponseEntity.ok().body(resMessage);
         } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Validated @RequestBody ChangePasswordUsersDto usuarioDto, BindingResult result) {
+        try {
+            ResMessage resMessage = new ResMessage();
+            if (result.hasErrors()) {
+                return super.getError(result);
+            }
+            UsuarioEntity existUsers = usuarioService.existsByUsuario(usuarioDto.getUsername());
+            if(!isNull(existUsers)) {
+                BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+                System.out.println("existUsers: " + existUsers);
+                boolean passChecker = bc.matches(usuarioDto.getOldPassword(), existUsers.getClave());
+                String password = new BCryptPasswordEncoder().encode(usuarioDto.getPassword());
+                if (passChecker) {
+                    usuarioService.changePassword(password, existUsers.getId());
+                    resMessage.setMessage("Contraseña actualizada");
+                    resMessage.setSuccess(true);
+                } else {
+                    if (existUsers.getClave().equals(usuarioDto.getOldPassword())) {
+                        usuarioService.changePassword(password, existUsers.getId());
+                        resMessage.setMessage("Contraseña actualizada");
+                        resMessage.setSuccess(true);
+                    } else {
+                        resMessage.setMessage("La contraseña antigua no conincide con la información de nustra base de datos");
+                    }
+                }
+            } else {
+                resMessage.setMessage("El usuario " + usuarioDto.getUsername() + " no existe");
+            }
+            if (!resMessage.getSuccess()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resMessage);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(resMessage);
+
+        } catch (RuntimeException e) {
+            log.error("Error: " + e.getMessage());
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -1,7 +1,5 @@
 package pe.edu.galaxy.training.parqueaderov1.entity.security;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +15,22 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
+@NamedStoredProcedureQueries(
+        @NamedStoredProcedureQuery(
+                name = "use.updateUser",
+                procedureName = "updateuserssp",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "id", type = Integer.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "nombre", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "telefono", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "numerodocumento", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "correo", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "users_name", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "direccion", type = String.class)
+                }
+        )
+
+        )
 @Table(name = "tb_users")
 // @JsonPropertyOrder({ "id", "usuario"/* ,"clave" */, "nombre", "estado" })
 public class UsuarioEntity {
@@ -41,7 +55,4 @@ public class UsuarioEntity {
     @JoinTable(name = "TBL_USUARIO_AUTHORITY", joinColumns = { @JoinColumn(name = "id_users") }, inverseJoinColumns = {
             @JoinColumn(name = "id_authority") })
     private Set<AuthorityEntity> authorities = new HashSet<>();
-
-
-
 }

@@ -11,10 +11,12 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordDto {
+public class ChangePasswordUsersDto {
     @NotBlank
     private String password;
     @NotBlank
-    private String tokenPassword;
     private String oldPassword;
+
+    @NotBlank
+    private String username;
 }

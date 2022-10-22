@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import pe.edu.galaxy.training.parqueaderov1.dto.AuthorityDto;
+import pe.edu.galaxy.training.parqueaderov1.dto.PersonaDto;
 import pe.edu.galaxy.training.parqueaderov1.dto.UsuarioDto;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.AuthorityEntity;
 import pe.edu.galaxy.training.parqueaderov1.entity.security.UsuarioEntity;
